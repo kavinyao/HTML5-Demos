@@ -4,11 +4,11 @@
 
   wrapper_id = 'wrapper';
 
-  width = 800;
+  width = document.documentElement.clientWidth;
 
-  height = 400;
+  height = document.documentElement.clientHeight;
 
-  star_number = 800;
+  star_number = Math.floor(0.001 * width * height);
 
   fps = 30;
 
@@ -102,9 +102,9 @@
 
   canvas = document.createElement('canvas');
 
-  canvas.width = width;
+  canvas.width = document.documentElement.clientWidth;
 
-  canvas.height = height;
+  canvas.height = document.documentElement.clientHeight;
 
   div.appendChild(canvas);
 
@@ -120,7 +120,7 @@
 
   max_size = 2;
 
-  speed = Math.PI / 60000;
+  speed = Math.PI / 100000;
 
   random_star = function(speed, max_radius, max_size) {
     var init_angle, max_brightness, radius, size;

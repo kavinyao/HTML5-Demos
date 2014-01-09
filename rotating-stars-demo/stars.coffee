@@ -1,8 +1,8 @@
 # config
 wrapper_id = 'wrapper'
-width = 800
-height = 400
-star_number = 800
+width = document.documentElement.clientWidth
+height = document.documentElement.clientHeight
+star_number = Math.floor 0.001 * width * height
 fps = 30
 
 class Sky
@@ -19,6 +19,7 @@ class Star
 
     draw: (ctx, sky, time_elapsed) ->
         angle = @init_angle + (time_elapsed*@speed) % (2*Math.PI)
+        # TODO: make compatible with Canvas coordinate system
         x = - @radius * Math.cos angle
         y = @radius * Math.sin angle
 
@@ -71,8 +72,8 @@ requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimati
 div = document.getElementById wrapper_id
 console.log div
 canvas = document.createElement 'canvas'
-canvas.width = width
-canvas.height = height
+canvas.width = document.documentElement.clientWidth
+canvas.height = document.documentElement.clientHeight
 div.appendChild canvas
 console.log canvas
 
@@ -83,7 +84,7 @@ ctx = canvas.getContext '2d'
 ctx.translate width, height
 max_radius = Math.sqrt width*width + height*height
 max_size = 2
-speed = Math.PI / 60000
+speed = Math.PI / 100000
 
 random_star = (speed, max_radius, max_size) ->
     init_angle = Math.random() * 2 * Math.PI
