@@ -1,0 +1,4 @@
+1. make compatible with Canvas coordinate system (-x, y stuff)
+2. make stars look more evenly distributed
+3. make rotating center flexible (and make sure there's a star at center)
+4. respond to viewport change
