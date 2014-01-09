@@ -47,7 +47,7 @@
       if (!sky.visible(x, y)) {
         return;
       }
-      brightness = (1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 * this.max_brightness;
+      brightness = ((1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 + 0.05) * this.max_brightness;
       ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
       ctx.save();
       ctx.translate(-x, -y);

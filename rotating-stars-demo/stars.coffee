@@ -26,7 +26,7 @@ class Star
         if not sky.visible x, y
             return
 
-        brightness = (1+Math.sin(0.001*time_elapsed+@bright_offset)) / 2 * @max_brightness
+        brightness = ((1+Math.sin(0.001*time_elapsed+@bright_offset)) / 2 + 0.05) * @max_brightness
         ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
         # draw star
         # since we gonna change origin and rotate, save context state first
