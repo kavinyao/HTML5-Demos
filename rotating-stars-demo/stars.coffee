@@ -21,7 +21,7 @@ class Star
         x = - @radius * Math.cos angle
         y = @radius * Math.sin angle
 
-        if not sky.visible(x, y)
+        if not sky.visible x, y
             return
 
         ctx.beginPath()
@@ -68,7 +68,7 @@ last_frame = 0
 
 draw_sky = (time_stamp) ->
     if time_stamp - last_frame < ms_per_frame
-        requestAnimationFrame(draw_sky)
+        requestAnimationFrame draw_sky
         return
 
     last_frame = time_stamp
@@ -78,6 +78,6 @@ draw_sky = (time_stamp) ->
     ctx.fillStyle = ctx.strokeStyle = 'white'
     star.draw ctx, sky, time_stamp for star in stars
 
-    requestAnimationFrame(draw_sky)
+    requestAnimationFrame draw_sky
 
-requestAnimationFrame(draw_sky)
+requestAnimationFrame draw_sky
