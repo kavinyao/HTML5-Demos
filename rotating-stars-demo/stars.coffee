@@ -13,8 +13,9 @@ class Sky
         return x > 0 and y > 0 and x <= @w and y <= @h
 
 class Star
-    # initial position, rotating speed
-    constructor: (@init_angle, @radius, @size, @speed) ->
+    # initial position, rotating speed, brightness (0-1)
+    constructor: (@init_angle, @radius, @size, @speed, @max_brightness) ->
+        @bright_offset = Math.random() * 2 * Math.PI
 
     draw: (ctx, sky, time_elapsed) ->
         angle = @init_angle + (time_elapsed*@speed) % (2*Math.PI)
@@ -24,6 +25,8 @@ class Star
         if not sky.visible x, y
             return
 
+        brightness = (1+Math.sin(0.001*time_elapsed+@bright_offset)) / 2 * @max_brightness
+        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
         ctx.beginPath()
         ctx.arc -x, -y, @size, 0, 2*Math.PI, true
         ctx.fill()
@@ -61,7 +64,7 @@ max_size = 2
 speed = Math.PI / 60000
 
 sky = new Sky width, height, 0, 0
-stars = (new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed) for i in [1..star_number])
+stars = (new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed, (Math.random()+0.5)/1.5) for i in [1..star_number])
 
 ms_per_frame = 1000 / fps
 last_frame = 0
@@ -75,7 +78,6 @@ draw_sky = (time_stamp) ->
 
     ctx.fillStyle = 'black'
     ctx.fillRect 0, 0, -width, -height
-    ctx.fillStyle = ctx.strokeStyle = 'white'
     star.draw ctx, sky, time_stamp for star in stars
 
     requestAnimationFrame draw_sky

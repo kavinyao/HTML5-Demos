@@ -29,15 +29,17 @@
   })();
 
   Star = (function() {
-    function Star(init_angle, radius, size, speed) {
+    function Star(init_angle, radius, size, speed, max_brightness) {
       this.init_angle = init_angle;
       this.radius = radius;
       this.size = size;
       this.speed = speed;
+      this.max_brightness = max_brightness;
+      this.bright_offset = Math.random() * 2 * Math.PI;
     }
 
     Star.prototype.draw = function(ctx, sky, time_elapsed) {
-      var angle, x, y;
+      var angle, brightness, x, y;
 
       angle = this.init_angle + (time_elapsed * this.speed) % (2 * Math.PI);
       x = -this.radius * Math.cos(angle);
@@ -45,6 +47,8 @@
       if (!sky.visible(x, y)) {
         return;
       }
+      brightness = (1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 * this.max_brightness;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
       ctx.beginPath();
       ctx.arc(-x, -y, this.size, 0, 2 * Math.PI, true);
       return ctx.fill();
@@ -102,7 +106,7 @@
 
     _results = [];
     for (i = _i = 1; 1 <= star_number ? _i <= star_number : _i >= star_number; i = 1 <= star_number ? ++_i : --_i) {
-      _results.push(new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed));
+      _results.push(new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed, (Math.random() + 0.5) / 1.5));
     }
     return _results;
   })();
@@ -121,7 +125,6 @@
     last_frame = time_stamp;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, -width, -height);
-    ctx.fillStyle = ctx.strokeStyle = 'white';
     for (_i = 0, _len = stars.length; _i < _len; _i++) {
       star = stars[_i];
       star.draw(ctx, sky, time_stamp);
