@@ -63,8 +63,15 @@ max_radius = Math.sqrt width*width + height*height
 max_size = 2
 speed = Math.PI / 60000
 
+random_star = (speed, max_radius, max_size) ->
+    init_angle = Math.random() * 2 * Math.PI
+    radius = Math.random() * max_radius
+    size = Math.random() * max_size
+    max_brightness = (Math.random()+0.5)/1.5
+    return new Star(init_angle, radius, size, speed, max_brightness)
+
 sky = new Sky width, height, 0, 0
-stars = (new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed, (Math.random()+0.5)/1.5) for i in [1..star_number])
+stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
 
 ms_per_frame = 1000 / fps
 last_frame = 0
