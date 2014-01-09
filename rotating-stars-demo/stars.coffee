@@ -3,6 +3,7 @@ wrapper_id = 'wrapper'
 width = 800
 height = 400
 star_number = 800
+fps = 30
 
 class Sky
     constructor: (@w, @h, @x, @y) ->
@@ -62,7 +63,16 @@ speed = Math.PI / 60000
 sky = new Sky width, height, 0, 0
 stars = (new Star(Math.random() * 2 * Math.PI, Math.random() * max_radius, Math.random() * max_size, speed) for i in [1..star_number])
 
+ms_per_frame = 1000 / fps
+last_frame = 0
+
 draw_sky = (time_stamp) ->
+    if time_stamp - last_frame < ms_per_frame
+        requestAnimationFrame(draw_sky)
+        return
+
+    last_frame = time_stamp
+
     ctx.fillStyle = 'black'
     ctx.fillRect 0, 0, -width, -height
     ctx.fillStyle = ctx.strokeStyle = 'white'
