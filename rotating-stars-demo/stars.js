@@ -49,8 +49,31 @@
       }
       brightness = (1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 * this.max_brightness;
       ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
+      ctx.save();
+      ctx.translate(-x, -y);
+      ctx.rotate(angle);
+      this.drawCross(this.size);
+      brightness = brightness * 0.75;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
+      ctx.rotate(0.25 * Math.PI);
+      this.drawCross(this.size * 4 / 5);
+      return ctx.restore();
+    };
+
+    Star.prototype.drawCross = function(size) {
+      var inner_side, outer_side;
+
       ctx.beginPath();
-      ctx.arc(-x, -y, this.size, 0, 2 * Math.PI, true);
+      inner_side = size;
+      outer_side = 2.5 * inner_side;
+      ctx.moveTo(inner_side, 0);
+      ctx.lineTo(outer_side, -outer_side);
+      ctx.lineTo(0, -inner_side);
+      ctx.lineTo(-outer_side, -outer_side);
+      ctx.lineTo(-inner_side, 0);
+      ctx.lineTo(-outer_side, outer_side);
+      ctx.lineTo(0, inner_side);
+      ctx.lineTo(outer_side, outer_side);
       return ctx.fill();
     };
 

@@ -27,8 +27,30 @@ class Star
 
         brightness = (1+Math.sin(0.001*time_elapsed+@bright_offset)) / 2 * @max_brightness
         ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
+        # draw star
+        # since we gonna change origin and rotate, save context state first
+        ctx.save()
+        ctx.translate -x, -y
+        ctx.rotate angle
+        @drawCross(@size)
+        brightness = brightness * 0.75
+        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
+        ctx.rotate 0.25*Math.PI
+        @drawCross(@size*4/5)
+        ctx.restore()
+
+    drawCross: (size) ->
         ctx.beginPath()
-        ctx.arc -x, -y, @size, 0, 2*Math.PI, true
+        inner_side = size
+        outer_side = 2.5 * inner_side
+        ctx.moveTo inner_side, 0
+        ctx.lineTo outer_side, -outer_side
+        ctx.lineTo 0, -inner_side
+        ctx.lineTo -outer_side, -outer_side
+        ctx.lineTo -inner_side, 0
+        ctx.lineTo -outer_side, outer_side
+        ctx.lineTo 0, inner_side
+        ctx.lineTo outer_side, outer_side
         ctx.fill()
 
 
