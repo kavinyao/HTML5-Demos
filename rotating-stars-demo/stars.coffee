@@ -16,6 +16,10 @@ class Sky
     visible: (x, y) ->
         return x >= @x_lower and x <= @x_upper and y >= @y_lower and y <= @y_upper
 
+    clear: (ctx) ->
+        ctx.fillStyle = 'black'
+        ctx.fillRect @x_lower, @y_lower, @w, @h
+
 class Star
     # initial position, rotating speed, brightness (0-1)
     constructor: (@init_angle, @radius, @size, @speed, @max_brightness) ->
@@ -80,7 +84,6 @@ div.appendChild canvas
 
 retinafy canvas
 
-max_radius = Math.sqrt width*width + height*height
 max_size = 2
 speed = Math.PI / 100000
 
@@ -91,8 +94,11 @@ random_star = (speed, max_radius, max_size) ->
     max_brightness = (Math.random()+0.5)/1.5
     return new Star(init_angle, radius, size, speed, max_brightness)
 
-center_x = width
-center_y = height
+center_x = Math.random() * width
+center_y = Math.random() * height
+diff_x = Math.max center_x, width - center_x
+diff_y = Math.max center_y, height - center_y
+max_radius = Math.sqrt diff_x*diff_x + diff_y*diff_y
 sky = new Sky width, height, center_x, center_y
 stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
 
@@ -110,8 +116,7 @@ draw_sky = (time_stamp) ->
 
     last_frame = time_stamp
 
-    ctx.fillStyle = 'black'
-    ctx.fillRect 0, 0, -width, -height
+    sky.clear ctx
     star.draw ctx, sky, time_stamp for star in stars
 
     requestAnimationFrame draw_sky
