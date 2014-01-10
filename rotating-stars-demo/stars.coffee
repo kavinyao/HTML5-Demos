@@ -14,10 +14,9 @@ class Sky
         diff_x = Math.max @center_x, @width - @center_x
         diff_y = Math.max @center_y, @height - @center_y
         @max_radius = Math.sqrt diff_x*diff_x + diff_y*diff_y
+        @update_boundary()
 
-        # set origin to bottom right corner
-        ctx.translate @center_x, @center_y
-
+    update_boundary: () ->
         @x_upper = @width - @center_x
         @x_lower = - @center_x
         @y_upper = @height - @center_y
@@ -30,6 +29,22 @@ class Sky
     clear: (ctx) ->
         ctx.fillStyle = 'black'
         ctx.fillRect @x_lower, @y_lower, @width, @height
+
+    scale: (new_width, new_height, stars) ->
+        # compute scale so that the center stays at relatively the same position
+        x_scale_factor = new_width / @width
+        y_scale_factor = new_height / @height
+        r_scale_factor = (Math.sqrt new_width*new_width + new_height*new_height) /
+            (Math.sqrt @width*@width + @height*@height)
+
+        @width = new_width
+        @height = new_height
+        @center_x = @center_x * x_scale_factor
+        @center_y = @center_y * y_scale_factor
+
+        @update_boundary()
+
+        star.scale r_scale_factor for star in stars
 
 class Star
     # initial position, rotating speed, brightness (0-1)
@@ -57,6 +72,9 @@ class Star
         ctx.rotate 0.25*Math.PI
         @drawCross(@size*4/5)
         ctx.restore()
+
+    scale: (scale_factor) ->
+        @radius = @radius * scale_factor
 
     drawCross: (size) ->
         ctx.beginPath()
@@ -89,11 +107,14 @@ requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimati
 
 div = document.getElementById wrapper_id
 canvas = document.createElement 'canvas'
-canvas.width = width
-canvas.height = height
 div.appendChild canvas
 
-retinafy canvas
+set_canvas_size = (width, height) ->
+    canvas.width = width
+    canvas.height = height
+    retinafy canvas
+
+set_canvas_size width, height
 
 ctx = canvas.getContext '2d'
 
@@ -109,6 +130,15 @@ center_y = Math.random() * height
 sky = new Sky width, height, center_x, center_y, ctx
 max_radius = sky.max_radius
 stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
+
+set_canvas_origin = () ->
+    # always change to new state
+    ctx.restore()
+    ctx.save()
+    # set origin to bottom right corner
+    ctx.translate sky.center_x, sky.center_y
+
+set_canvas_origin()
 
 ms_per_frame = 1000 / fps
 last_frame = 0
@@ -126,3 +156,19 @@ draw_sky = (time_stamp) ->
     requestAnimationFrame draw_sky
 
 requestAnimationFrame draw_sky
+
+# handle window size change
+change_sky = () ->
+    width = document.documentElement.clientWidth
+    height = document.documentElement.clientHeight
+
+    set_canvas_size  width, height
+    sky.scale width, height, stars
+    set_canvas_origin()
+
+timeoutID = 0
+window.addEventListener 'resize', () ->
+    if(timeoutID)
+        clearTimeout timeoutID
+
+    timeoutID = setTimeout change_sky, 50
