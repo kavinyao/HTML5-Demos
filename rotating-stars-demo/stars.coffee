@@ -172,3 +172,37 @@ window.addEventListener 'resize', () ->
         clearTimeout timeoutID
 
     timeoutID = setTimeout change_sky, 50
+
+# full screen support
+# https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Using_full_screen_mode
+# press `f` to toggle full screen
+inFullscreen = () ->
+    return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement
+
+enterFullscreen = (elem) ->
+    if elem.requestFullscreen
+        elem.requestFullscreen()
+    else if elem.mozRequestFullScreen
+        elem.mozRequestFullScreen()
+    else if elem.webkitRequestFullscreen
+        elem.webkitRequestFullscreen Element.ALLOW_KEYBOARD_INPUT
+    else if elem.msRequestFullscreen
+        elem.msRequestFullscreen()
+
+exitFullscreen = () ->
+    if document.exitFullscreen
+        document.exitFullscreen()
+    else if document.mozExitFullscreen
+        document.mozExitFullScreen()
+    else if document.webkitExitFullScreen
+        document.webkitExitFullscreen()
+    else if document.msExitFullscreen
+        document.msExitFullscreen()
+
+window.addEventListener 'keypress', (e) ->
+    key = e.which || e.charCode
+    if key == 102
+        if inFullscreen()
+            exitFullscreen()
+        else
+            enterFullscreen document.documentElement
