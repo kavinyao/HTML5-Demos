@@ -3,14 +3,25 @@ wrapper_id = 'wrapper'
 width = document.documentElement.clientWidth
 height = document.documentElement.clientHeight
 star_number = Math.floor 0.001 * width * height
+speed = Math.PI / 100000
+max_size = 2
 fps = 30
 
 class Sky
-    constructor: (@w, @h, @x, @y) ->
-        @x_upper = @w - @x
-        @x_lower = - @x
-        @y_upper = @h - @y
-        @y_lower = - @y
+    # construct a sky of @width by @height
+    # set center of ctx properly
+    constructor: (@width, @height, @center_x, @center_y, ctx) ->
+        diff_x = Math.max @center_x, @width - @center_x
+        diff_y = Math.max @center_y, @height - @center_y
+        @max_radius = Math.sqrt diff_x*diff_x + diff_y*diff_y
+
+        # set origin to bottom right corner
+        ctx.translate @center_x, @center_y
+
+        @x_upper = @width - @center_x
+        @x_lower = - @center_x
+        @y_upper = @height - @center_y
+        @y_lower = - @center_y
 
     # check if a point is in the visible region
     visible: (x, y) ->
@@ -18,7 +29,7 @@ class Sky
 
     clear: (ctx) ->
         ctx.fillStyle = 'black'
-        ctx.fillRect @x_lower, @y_lower, @w, @h
+        ctx.fillRect @x_lower, @y_lower, @width, @height
 
 class Star
     # initial position, rotating speed, brightness (0-1)
@@ -84,8 +95,7 @@ div.appendChild canvas
 
 retinafy canvas
 
-max_size = 2
-speed = Math.PI / 100000
+ctx = canvas.getContext '2d'
 
 random_star = (speed, max_radius, max_size) ->
     init_angle = Math.random() * 2 * Math.PI
@@ -96,15 +106,9 @@ random_star = (speed, max_radius, max_size) ->
 
 center_x = Math.random() * width
 center_y = Math.random() * height
-diff_x = Math.max center_x, width - center_x
-diff_y = Math.max center_y, height - center_y
-max_radius = Math.sqrt diff_x*diff_x + diff_y*diff_y
-sky = new Sky width, height, center_x, center_y
+sky = new Sky width, height, center_x, center_y, ctx
+max_radius = sky.max_radius
 stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
-
-ctx = canvas.getContext '2d'
-# set origin to bottom right corner
-ctx.translate center_x, center_y
 
 ms_per_frame = 1000 / fps
 last_frame = 0
