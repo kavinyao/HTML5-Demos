@@ -102,17 +102,13 @@
 
   div = document.getElementById(wrapper_id);
 
-  console.log(div);
-
   canvas = document.createElement('canvas');
 
-  canvas.width = document.documentElement.clientWidth;
+  canvas.width = width;
 
-  canvas.height = document.documentElement.clientHeight;
+  canvas.height = height;
 
   div.appendChild(canvas);
-
-  console.log(canvas);
 
   retinafy(canvas);
 

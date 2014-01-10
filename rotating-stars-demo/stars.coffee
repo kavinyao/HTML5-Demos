@@ -73,12 +73,10 @@ retinafy = (canvas) ->
 requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
 
 div = document.getElementById wrapper_id
-console.log div
 canvas = document.createElement 'canvas'
-canvas.width = document.documentElement.clientWidth
-canvas.height = document.documentElement.clientHeight
+canvas.width = width
+canvas.height = height
 div.appendChild canvas
-console.log canvas
 
 retinafy canvas
 
