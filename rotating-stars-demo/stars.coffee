@@ -7,10 +7,14 @@ fps = 30
 
 class Sky
     constructor: (@w, @h, @x, @y) ->
+        @x_upper = @w - @x
+        @x_lower = - @x
+        @y_upper = @h - @y
+        @y_lower = - @y
 
     # check if a point is in the visible region
     visible: (x, y) ->
-        return x > 0 and y > 0 and x <= @w and y <= @h
+        return x >= @x_lower and x <= @x_upper and y >= @y_lower and y <= @y_upper
 
 class Star
     # initial position, rotating speed, brightness (0-1)
@@ -19,9 +23,8 @@ class Star
 
     draw: (ctx, sky, time_elapsed) ->
         angle = @init_angle + (time_elapsed*@speed) % (2*Math.PI)
-        # TODO: make compatible with Canvas coordinate system
-        x = - @radius * Math.cos angle
-        y = @radius * Math.sin angle
+        x = @radius * Math.cos angle
+        y = - @radius * Math.sin angle
 
         if not sky.visible x, y
             return
@@ -31,7 +34,7 @@ class Star
         # draw star
         # since we gonna change origin and rotate, save context state first
         ctx.save()
-        ctx.translate -x, -y
+        ctx.translate x, y
         ctx.rotate angle
         @drawCross(@size)
         brightness = brightness * 0.75
@@ -79,9 +82,6 @@ console.log canvas
 
 retinafy canvas
 
-ctx = canvas.getContext '2d'
-# set origin to bottom right corner
-ctx.translate width, height
 max_radius = Math.sqrt width*width + height*height
 max_size = 2
 speed = Math.PI / 100000
@@ -93,8 +93,14 @@ random_star = (speed, max_radius, max_size) ->
     max_brightness = (Math.random()+0.5)/1.5
     return new Star(init_angle, radius, size, speed, max_brightness)
 
-sky = new Sky width, height, 0, 0
+center_x = width
+center_y = height
+sky = new Sky width, height, center_x, center_y
 stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
+
+ctx = canvas.getContext '2d'
+# set origin to bottom right corner
+ctx.translate center_x, center_y
 
 ms_per_frame = 1000 / fps
 last_frame = 0
