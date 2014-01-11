@@ -3,6 +3,7 @@ wrapper_id = 'wrapper'
 width = document.documentElement.clientWidth
 height = document.documentElement.clientHeight
 star_number = Math.floor 0.001 * width * height
+show_trails = false
 speed = Math.PI / 100000
 max_size = 2
 fps = 30
@@ -48,7 +49,7 @@ class Sky
 
 class Star
     # initial position, rotating speed, brightness (0-1)
-    constructor: (@init_angle, @radius, @size, @speed, @max_brightness) ->
+    constructor: (@init_angle, @radius, @size, @speed, @max_brightness, @trail) ->
         @bright_offset = Math.random() * 2 * Math.PI
 
     draw: (ctx, sky, time_elapsed) ->
@@ -60,10 +61,10 @@ class Star
             return
 
         brightness = ((1+Math.sin(0.001*time_elapsed+@bright_offset)) / 2 + 0.05) * @max_brightness
-        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
         # draw star
         # since we gonna change origin and rotate, save context state first
         ctx.save()
+        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
         ctx.translate x, y
         ctx.rotate angle
         @drawCross(@size)
@@ -72,6 +73,17 @@ class Star
         ctx.rotate 0.25*Math.PI
         @drawCross(@size*4/5)
         ctx.restore()
+
+        if not @trail
+            return
+
+        # draw star trail
+        real_angle = 2 * Math.PI - angle % (2*Math.PI)
+        ctx.strokeStyle = "rgba(255, 255, 255, #{brightness*2/3}"
+        ctx.beginPath()
+        ctx.lineWidth = @size
+        ctx.arc 0, 0, @radius, real_angle, real_angle+Math.PI/4, false
+        ctx.stroke()
 
     scale: (scale_factor) ->
         @radius = @radius * scale_factor
@@ -118,18 +130,18 @@ set_canvas_size width, height
 
 ctx = canvas.getContext '2d'
 
-random_star = (speed, max_radius, max_size) ->
+random_star = (speed, max_radius, max_size, show_trail) ->
     init_angle = Math.random() * 2 * Math.PI
     radius = Math.random() * max_radius
     size = Math.random() * max_size
     max_brightness = (Math.random()+0.5)/1.5
-    return new Star(init_angle, radius, size, speed, max_brightness)
+    return new Star(init_angle, radius, size, speed, max_brightness, show_trail)
 
 center_x = Math.random() * width
 center_y = Math.random() * height
 sky = new Sky width, height, center_x, center_y, ctx
 max_radius = sky.max_radius
-stars = (random_star(speed, max_radius, max_size) for i in [1..star_number])
+stars = (random_star(speed, max_radius, max_size, show_trails) for i in [1..star_number])
 
 set_canvas_origin = () ->
     # always change to new state
