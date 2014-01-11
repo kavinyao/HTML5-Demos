@@ -1,5 +1,5 @@
 1. [Done] make compatible with Canvas coordinate system (-x, y stuff)
-2. make stars look more evenly distributed
+2. more realistic star arrangement (density, size, etc)
 3. [Done] make rotating center flexible (and make sure there's a star at center)
 4. [Done] respond to viewport change
 5. make a github page
