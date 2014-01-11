@@ -80,7 +80,14 @@
       this.max_brightness = max_brightness;
       this.trail = trail;
       this.bright_offset = Math.random() * 2 * Math.PI;
+      this.r = this.g = this.b = 255;
     }
+
+    Star.prototype.setColor = function(r, g, b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
+    };
 
     Star.prototype.draw = function(ctx, sky, time_elapsed) {
       var angle, brightness, real_angle, x, y;
@@ -93,12 +100,12 @@
       }
       brightness = ((1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 + 0.05) * this.max_brightness;
       ctx.save();
-      ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness;
       ctx.translate(x, y);
       ctx.rotate(angle);
       this.drawCross(this.size);
       brightness = brightness * 0.75;
-      ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, " + brightness;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness;
       ctx.rotate(0.25 * Math.PI);
       this.drawCross(this.size * 4 / 5);
       ctx.restore();
@@ -106,7 +113,7 @@
         return;
       }
       real_angle = 2 * Math.PI - angle % (2 * Math.PI);
-      ctx.strokeStyle = "rgba(255, 255, 255, " + (brightness * 2 / 3);
+      ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + (brightness * 2 / 3);
       ctx.beginPath();
       ctx.lineWidth = this.size;
       ctx.arc(0, 0, this.radius, real_angle, real_angle + Math.PI / 4, false);
@@ -170,13 +177,22 @@
   ctx = canvas.getContext('2d');
 
   random_star = function(speed, max_radius, max_size, show_trail) {
-    var init_angle, max_brightness, radius, size;
+    var init_angle, max_brightness, r, radius, s, size;
 
     init_angle = Math.random() * 2 * Math.PI;
     radius = Math.random() * max_radius;
     size = Math.random() * max_size;
     max_brightness = (Math.random() + 0.5) / 1.5;
-    return new Star(init_angle, radius, size, speed, max_brightness, show_trail);
+    s = new Star(init_angle, radius, size, speed, max_brightness, show_trail);
+    r = Math.random();
+    if (r < 0.1) {
+      s.setColor(114, 153, 166);
+    } else if (r < 0.4) {
+      s.setColor(148, 131, 116);
+    } else {
+      s.setColor(242, 254, 255);
+    }
+    return s;
   };
 
   center_x = Math.random() * width;

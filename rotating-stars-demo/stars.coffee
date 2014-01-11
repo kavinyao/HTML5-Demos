@@ -51,6 +51,9 @@ class Star
     # initial position, rotating speed, brightness (0-1)
     constructor: (@init_angle, @radius, @size, @speed, @max_brightness, @trail) ->
         @bright_offset = Math.random() * 2 * Math.PI
+        @r = @g = @b = 255
+
+    setColor: (@r, @g, @b) ->
 
     draw: (ctx, sky, time_elapsed) ->
         angle = @init_angle + (time_elapsed*@speed) % (2*Math.PI)
@@ -64,12 +67,12 @@ class Star
         # draw star
         # since we gonna change origin and rotate, save context state first
         ctx.save()
-        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
+        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness}"
         ctx.translate x, y
         ctx.rotate angle
         @drawCross(@size)
         brightness = brightness * 0.75
-        ctx.fillStyle = ctx.strokeStyle = "rgba(255, 255, 255, #{brightness}"
+        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness}"
         ctx.rotate 0.25*Math.PI
         @drawCross(@size*4/5)
         ctx.restore()
@@ -79,7 +82,7 @@ class Star
 
         # draw star trail
         real_angle = 2 * Math.PI - angle % (2*Math.PI)
-        ctx.strokeStyle = "rgba(255, 255, 255, #{brightness*2/3}"
+        ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness*2/3}"
         ctx.beginPath()
         ctx.lineWidth = @size
         ctx.arc 0, 0, @radius, real_angle, real_angle+Math.PI/4, false
@@ -135,7 +138,17 @@ random_star = (speed, max_radius, max_size, show_trail) ->
     radius = Math.random() * max_radius
     size = Math.random() * max_size
     max_brightness = (Math.random()+0.5)/1.5
-    return new Star(init_angle, radius, size, speed, max_brightness, show_trail)
+    s = new Star(init_angle, radius, size, speed, max_brightness, show_trail)
+
+    r = Math.random()
+    if r < 0.1
+        s.setColor 114, 153, 166
+    else if r < 0.4
+        s.setColor 148, 131, 116
+    else
+        s.setColor 242, 254, 255
+
+    return s
 
 center_x = Math.random() * width
 center_y = Math.random() * height
