@@ -2,7 +2,9 @@
 2. more realistic star arrangement (density, size, etc)
 3. [Done] make rotating center flexible (and make sure there's a star at center)
 4. [Done] respond to viewport change
-5. make a github page
+5. [Done] make a github page
 6. [Done] add fullscreen support
 7. [Done] add a bit star trail
 8. [Done] add different colors to stars
+9. improve performance
+10. modularize
