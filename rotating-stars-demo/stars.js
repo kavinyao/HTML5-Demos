@@ -16,7 +16,7 @@
 
   max_size = 2;
 
-  fps = 30;
+  fps = 24;
 
   Sky = (function() {
     function Sky(width, height, center_x, center_y, ctx) {

@@ -6,7 +6,7 @@ star_number = Math.floor 0.001 * width * height
 show_trails = false
 speed = Math.PI / 100000
 max_size = 2
-fps = 30
+fps = 24
 
 class Sky
     # construct a sky of @width by @height
@@ -70,11 +70,11 @@ class Star
         ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness})"
         ctx.translate x, y
         ctx.rotate angle
-        @drawCross(@size)
+        @drawCross @size
         brightness = brightness * 0.75
         ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness})"
         ctx.rotate 0.25*Math.PI
-        @drawCross(@size*4/5)
+        @drawCross @size*4/5
         ctx.restore()
 
         if not @trail
