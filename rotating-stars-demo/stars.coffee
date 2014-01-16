@@ -67,12 +67,12 @@ class Star
         # draw star
         # since we gonna change origin and rotate, save context state first
         ctx.save()
-        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness}"
+        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness})"
         ctx.translate x, y
         ctx.rotate angle
         @drawCross(@size)
         brightness = brightness * 0.75
-        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness}"
+        ctx.fillStyle = ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness})"
         ctx.rotate 0.25*Math.PI
         @drawCross(@size*4/5)
         ctx.restore()
@@ -82,7 +82,7 @@ class Star
 
         # draw star trail
         real_angle = 2 * Math.PI - angle % (2*Math.PI)
-        ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness*2/3}"
+        ctx.strokeStyle = "rgba(#{@r}, #{@g}, #{@b}, #{brightness*2/3})"
         ctx.beginPath()
         ctx.lineWidth = @size
         ctx.arc 0, 0, @radius, real_angle, real_angle+Math.PI/4, false

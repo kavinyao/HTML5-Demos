@@ -100,12 +100,12 @@
       }
       brightness = ((1 + Math.sin(0.001 * time_elapsed + this.bright_offset)) / 2 + 0.05) * this.max_brightness;
       ctx.save();
-      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness + ")";
       ctx.translate(x, y);
       ctx.rotate(angle);
       this.drawCross(this.size);
       brightness = brightness * 0.75;
-      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness;
+      ctx.fillStyle = ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + brightness + ")";
       ctx.rotate(0.25 * Math.PI);
       this.drawCross(this.size * 4 / 5);
       ctx.restore();
@@ -113,7 +113,7 @@
         return;
       }
       real_angle = 2 * Math.PI - angle % (2 * Math.PI);
-      ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + (brightness * 2 / 3);
+      ctx.strokeStyle = "rgba(" + this.r + ", " + this.g + ", " + this.b + ", " + (brightness * 2 / 3) + ")";
       ctx.beginPath();
       ctx.lineWidth = this.size;
       ctx.arc(0, 0, this.radius, real_angle, real_angle + Math.PI / 4, false);
